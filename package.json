@@ -15,7 +15,8 @@
         "prebuild": "yarn run clean",
         "build": "yarn run build:lib && yarn run build:types",
         "build:lib": "babel src -x .ts -d lib --source-maps",
-        "build:types": "tsc --emitDeclarationOnly --declaration --outDir lib -p tsconfig.build.json"
+        "build:types": "tsc --emitDeclarationOnly --declaration --outDir lib -p tsconfig.build.json",
+        "run": "ts-node src/index.ts"
     },
     "repository": {
         "type": "git",
@@ -55,5 +56,11 @@
         "typescript": "^3.5.1",
         "webpack": "^4.41.2"
     },
-    "dependencies": {}
+    "dependencies": {
+        "@types/clear": "^0.1.0",
+        "@types/cli-table": "^0.3.0",
+        "clear": "^0.1.0",
+        "cli-table": "^0.3.1",
+        "ethers": "^4.0.45"
+    }
 }

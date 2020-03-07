@@ -22,7 +22,7 @@ export interface Token {
     // Address of the token
     address: string;
     // Todo perhaps change this
-    amount?: string;
+    balance?: string;
 }
 
 export class Watcher {
@@ -36,21 +36,22 @@ export class Watcher {
         this.balances = new Map();
     }
 
-    async start() {
+    async update() {
         let provider = ethers.getDefaultProvider();
-        this.addresses.forEach(async userAddress => {
-            let tokens = [];
-            this.tokens.forEach(async token => {
+        for (const userAddress of this.addresses) {
+            const ether = (await provider.getBalance(userAddress)).toString();
+            // const ether = await provider.getBalance(userAddress)
+            const tokens = [] as Token[];
+
+            for (const token of this.tokens) {
                 let contract = new ethers.Contract(token.address, erc20Abi, provider);
                 const balance = await contract.balanceOf(userAddress);
-                tokens[] = ;
-            })
-        })
-        this.log()
-    }
-
-    registerToken() {
-
+                token.balance = ethers.utils.formatEther(balance);
+                tokens.push(token)
+            }
+            this.balances.set(userAddress, {ether: ethers.utils.formatEther(ether), tokens})
+        }
+        this.log();
     }
 
     log() {
@@ -58,10 +59,14 @@ export class Watcher {
         const headers = ["Address", "ETH"];
         this.tokens.forEach(token => { headers.push(token.name) });
         const table = new Table({ head: headers });
-        table.push(
-            ['First value', 'Second value']
-            , ['First value', 'Second value']
-        );
+        this.addresses.forEach(address => {
+           const balances = this.balances.get(address);
+           const tokenBalances = balances.tokens.map(token => { return token.balance });
+           console.log({tokenBalances})
+           table.push([
+               address, balances.ether, ...tokenBalances
+           ])
+        })
         console.log(table.toString());
     }
 }

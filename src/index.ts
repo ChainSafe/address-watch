@@ -21,4 +21,8 @@ const opts: WatcherOpts = {
 }
 
 const n = new Watcher(opts);
-n.start();
+n.update();
+// (async () => {
+//     await n.update()
+//     n.log();
+// })();
